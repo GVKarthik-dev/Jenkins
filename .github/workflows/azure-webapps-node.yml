@@ -1,0 +1,28 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: '15'
+      - name: Install dependencies
+        run: npm install
+      - name: Build the React app
+        run: npm run build
+      - name: Deploy to Azure Web app
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: Buddylearn
+          slot-name: 'production'
+          publish-profile: ${{ secrets.Azure_cred }}
+          package: ./build
